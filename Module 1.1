@@ -1,0 +1,53 @@
+import psutil       # Library for system monitoring
+import json         # For serializing data into JSON format
+import time         # For time-related functions
+import collections  # Provides deque for fixed-size sliding windows
+import math         # For computing standard deviation
+
+# ---------------------------
+# Data Acquisition Functions
+# ---------------------------
+def collect_cpu_metrics():
+    """
+    Collects CPU-related metrics.
+    
+    Returns:
+        dict: Contains overall CPU usage percentage, per-core usage,
+              and CPU frequencies (if available).
+    """
+    # Measure overall CPU usage over 0.5 seconds
+    overall_cpu = psutil.cpu_percent(interval=0.5)
+    # Measure per-core CPU usage over 0.5 seconds
+    per_cpu = psutil.cpu_percent(interval=0.5, percpu=True)
+    
+    cpu_data = {
+        "overall_cpu_percent": overall_cpu,
+        "per_cpu_percent": per_cpu
+    }
+  # Attempt to collect CPU frequency for each core; if not available, set to None
+    try:
+        cpu_data["cpu_freq"] = [freq.current for freq in psutil.cpu_freq(percpu=True)]
+    except Exception:
+        cpu_data["cpu_freq"] = None
+    
+    return cpu_data
+
+def collect_memory_metrics():
+    """
+    Collects memory-related metrics.
+    
+    Returns:
+        dict: Contains total, used, and available memory, memory usage percentage, and swap details.
+    """
+    mem = psutil.virtual_memory()
+    swap = psutil.swap_memory()
+    
+    return {
+        "total_memory": mem.total,
+        "used_memory": mem.used, 
+        "available_memory": mem.available,
+        "memory_percent": mem.percent,
+        "swap_total": swap.total,
+        "swap_used": swap.used,
+        "swap_percent": swap.percent
+    }
