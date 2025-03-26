@@ -1,0 +1,19 @@
+def _compute_statistics(self, data_window):
+        """
+        Computes statistics (average, min, max, standard deviation) for a data window.
+        
+        Parameters:
+            data_window (deque): A collection of numerical values.
+        
+        Returns:
+            dict: Contains keys "avg", "min", "max", and "std".
+        """
+        n = len(data_window)
+        if n == 0:
+            return {"avg": 0, "min": 0, "max": 0, "std": 0}
+        avg_val = sum(data_window) / n
+        min_val = min(data_window)
+        max_val = max(data_window)
+        std_val = math.sqrt(sum((x - avg_val) ** 2 for x in data_window) / n)
+        return {"avg": avg_val, "min": min_val, "max": max_val, "std": std_val}
+    
