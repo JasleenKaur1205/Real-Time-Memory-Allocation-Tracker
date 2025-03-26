@@ -1,0 +1,36 @@
+def main():
+    """
+    Main function that combines data acquisition and aggregation.
+    - Collects raw system metrics.
+    - Feeds them into the aggregator.
+    - Outputs both raw and aggregated metrics in JSON format.
+    """
+    # Create an instance of MetricAggregator with a sliding window of 5 samples
+    aggregator = MetricAggregator(window_size=5)
+    
+    # Define the sampling interval in seconds
+    sampling_interval = 3
+    
+    try:
+        while True:
+            # Collect raw system metrics
+            raw_metrics = collect_all_metrics()
+            # Print raw metrics for debugging/verification
+            print("Raw Metrics:")
+            print(json.dumps(raw_metrics, indent=4))
+            
+            # Add the collected raw metrics to the aggregator
+            aggregator.add_raw_metrics(raw_metrics)
+            
+            # Retrieve the aggregated metrics in JSON format
+            aggregated_json = aggregator.get_aggregated_metrics_json()
+            print("\nAggregated Metrics (JSON):")
+            print(aggregated_json)
+            
+            # Wait for the next sampling interval
+            time.sleep(sampling_interval)
+    except KeyboardInterrupt:
+        print("\nMonitoring stopped by user.")
+
+if __name__ == "__main__":
+    main()
