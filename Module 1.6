@@ -1,0 +1,9 @@
+ def get_aggregated_metrics_json(self):
+        """
+        Returns the aggregated metrics in JSON format.
+        
+        Returns:
+            str: JSON-formatted aggregated metrics.
+        """
+        aggregated = self.get_aggregated_metrics()
+        return json.dumps(aggregated, indent=4)
