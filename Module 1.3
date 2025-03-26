@@ -1,0 +1,37 @@
+def collect_process_metrics(top_n=5):
+    """
+    Collects metrics for running processes.
+    
+    Returns the top 'top_n' processes sorted by memory usage.
+    
+    Parameters:
+        top_n (int): Number of processes to return (default is 5).
+    
+    Returns:
+        list: A list of dictionaries, each containing process details (PID, name, CPU and memory usage, and I/O counters).
+    """
+    processes = []
+    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent', 'io_counters']):
+        try:
+            processes.append(proc.info)
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+    # Sort processes by memory usage (descending) and return top_n
+    processes = sorted(processes, key=lambda p: p.get("memory_percent", 0), reverse=True)[:top_n]
+    return processes
+def collect_all_metrics():
+    """
+    Aggregates all raw system metrics into a single dictionary.
+    
+    Returns:
+        dict: Contains a timestamp and dictionaries of CPU, memory, disk, network, and process metrics.
+    """
+    data = {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "cpu": collect_cpu_metrics(),         # Nested dictionary for CPU metrics
+        "memory": collect_memory_metrics(),     # Nested dictionary for memory metrics
+        "disk": collect_disk_metrics(),         # Disk I/O metrics
+        "network": collect_network_metrics(),   # Network metrics
+        "processes": collect_process_metrics()  # List of top processes
+    }
+    return data
