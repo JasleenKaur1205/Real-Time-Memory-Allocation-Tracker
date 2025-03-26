@@ -1,0 +1,33 @@
+def collect_disk_metrics():
+    """
+    Collects disk I/O metrics.
+    
+    Returns:
+        dict: Contains disk read/write operation counts and byte totals.
+    """
+    disk_io = psutil.disk_io_counters()
+    return {
+        "read_count": disk_io.read_count,
+        "write_count": disk_io.write_count,
+        "read_bytes": disk_io.read_bytes,
+        "write_bytes": disk_io.write_bytes
+    }
+
+def collect_network_metrics():
+    """
+    Collects network I/O metrics.
+    
+    Returns:
+        dict: Contains bytes sent/received, packet counts, and error statistics.
+    """
+    net_io = psutil.net_io_counters()
+    return {
+        "bytes_sent": net_io.bytes_sent,
+        "bytes_recv": net_io.bytes_recv,
+        "packets_sent": net_io.packets_sent,
+        "packets_recv": net_io.packets_recv,
+        "errin": net_io.errin,
+        "errout": net_io.errout,
+        "dropin": net_io.dropin,
+        "dropout": net_io.dropout
+    }
